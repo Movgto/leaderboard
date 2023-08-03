@@ -45,7 +45,7 @@ Building a Leaderboard with API calls
 
 ## 🚀 Live Demo <a name="live-demo"></a>
 
-Live demo coming soon.
+See live demo [here](https://movgto.github.io/leaderboard/dist).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
