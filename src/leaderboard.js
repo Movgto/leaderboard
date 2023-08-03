@@ -46,7 +46,6 @@ const initiateLeaderboard = () => {
     const score = scoreInput.value;
 
     if ((!name || !score) || (name === '' || score === '')) {
-      console.log('Name and score field must have a value');
       return;
     }
     addNewScore(name, score);
