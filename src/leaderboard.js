@@ -1,22 +1,11 @@
 const leaderboard = document.getElementById('leaderboard');
 const addBtn = document.getElementById('add-btn');
+const refreshBtn = document.getElementById('refresh-btn');
 const nameInput = document.getElementById('name');
 const scoreInput = document.getElementById('score');
-
-const scores = [
-  {
-    name: 'Albert',
-    score: 1238,
-  },
-  {
-    name: 'Carl',
-    score: 2379,
-  },
-  {
-    name: 'Robert',
-    score: 829,
-  },
-];
+const gameID = 'wts0upGMh63kLvpHbnYm';
+const alertMsg = document.getElementById('alert-msg');
+let alertTimeout = null;
 
 const createNewRow = (name, score) => {
   const row = document.createElement('div');
@@ -25,31 +14,65 @@ const createNewRow = (name, score) => {
   return row;
 };
 
-const refreshBoard = () => {
+const refreshBoard = async (gameID) => {
   leaderboard.innerHTML = '';
-  scores.forEach((data) => {
-    leaderboard.appendChild(createNewRow(data.name, data.score));
-  });
+  const getScores = await fetch(`https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/${gameID}/scores`);
+  const scores = await getScores.json();
+
+  if (scores.result.length > 0) {
+    scores.result.forEach((item) => {
+      leaderboard.appendChild(createNewRow(item.user, item.score));
+    });
+  }
 };
 
-const addNewScore = (name, score) => {
-  scores.push({
-    name,
-    score,
-  });
+const addNewScore = async (name, score, gameID) => {
+  await fetch(`https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/${gameID}/scores`,
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        user: name,
+        score: Number(score),
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    });
 };
 
-const initiateLeaderboard = () => {
-  refreshBoard();
+const initiateLeaderboard = async () => {
+  refreshBoard(gameID);
   addBtn.addEventListener('click', () => {
     const name = nameInput.value;
     const score = scoreInput.value;
 
     if ((!name || !score) || (name === '' || score === '')) {
+      addNewScore(name, score, gameID);
+      alertMsg.className = 'fail';
+      alertMsg.textContent = 'All the fields must contain a value';
+      clearTimeout(alertTimeout);
+
+      alertTimeout = setTimeout(() => {
+        alertMsg.textContent = '';
+      }, 1000);
       return;
     }
-    addNewScore(name, score);
-    refreshBoard();
+
+    nameInput.value = '';
+    scoreInput.value = '';
+
+    addNewScore(name, score, gameID);
+    alertMsg.className = 'success';
+    alertMsg.textContent = 'A new score has been succesfully added to the leaderboard!';
+    clearTimeout(alertTimeout);
+
+    alertTimeout = setTimeout(() => {
+      alertMsg.textContent = '';
+    }, 1000);
+  });
+
+  refreshBtn.addEventListener('click', () => {
+    refreshBoard(gameID);
   });
 };
 
