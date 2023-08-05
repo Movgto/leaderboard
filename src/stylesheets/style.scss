@@ -13,6 +13,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 
   h1 {
     align-self: flex-start;
@@ -21,17 +22,32 @@ body {
 
   #leaderboard-ctr {
     display: flex;
+    flex-direction: column;
     justify-content: space-around;
     width: 95%;
+    gap: 1rem;
 
     #leaderboard-table {
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      background-color: #999;
+      border-radius: 0.4rem;
+      padding: 1rem;
 
       #recent-container {
         display: flex;
         gap: 0.4rem;
+
+        #refresh-btn {
+          color: #309eff;
+          padding: 0.4rem;
+
+          &:hover {
+            color: #8fc9fc;
+            cursor: pointer;
+          }
+        }
       }
 
       #leaderboard {
@@ -45,6 +61,24 @@ body {
       display: flex;
       flex-direction: column;
       gap: 1rem;
+
+      input {
+        padding: 0.4rem 0;
+        font-size: 1.2rem;
+      }
+
+      #add-btn {
+        background-color: #309eff;
+        border-radius: 0.3rem;
+        border: transparent;
+        padding: 0.5rem 0;
+        color: #fff;
+
+        &:hover {
+          background-color: #8fc9fc;
+          cursor: pointer;
+        }
+      }
     }
   }
 }
@@ -55,4 +89,10 @@ body {
 
 .fail {
   color: red;
+}
+
+@media only screen and (min-width: 700px) {
+  #leaderboard-ctr {
+    flex-direction: row !important;
+  }
 }
