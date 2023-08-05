@@ -17,41 +17,30 @@ const createNewRow = (name, score) => {
 const refreshBoard = async (gameID) => {
   leaderboard.innerHTML = '';
   const getScores = await fetch(`https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/${gameID}/scores`);
-  let scores = await getScores.json();
+  const scores = await getScores.json();
 
   if (scores.result.length > 0) {
     scores.result.forEach((item) => {
       leaderboard.appendChild(createNewRow(item.user, item.score));
     });
   }
-
-  console.log(scores);
 };
 
 const addNewScore = async (name, score, gameID) => {
-  const response = await fetch(`https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/${gameID}/scores`,
+  await fetch(`https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/${gameID}/scores`,
     {
       method: 'POST',
       body: JSON.stringify({
         user: name,
-        score: Number(score)
+        score: Number(score),
       }),
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
-      }
-    }
-  );
-
-  const result = await response.json();
-
-  console.log(gameID);
-
-  console.log(result);
-
+      },
+    });
 };
 
 const initiateLeaderboard = async () => {
-  console.log(gameID);
   refreshBoard(gameID);
   addBtn.addEventListener('click', () => {
     const name = nameInput.value;
@@ -65,13 +54,13 @@ const initiateLeaderboard = async () => {
 
       alertTimeout = setTimeout(() => {
         alertMsg.textContent = '';
-      }, 1000)
+      }, 1000);
       return;
     }
 
     nameInput.value = '';
     scoreInput.value = '';
-    
+
     addNewScore(name, score, gameID);
     alertMsg.className = 'success';
     alertMsg.textContent = 'A new score has been succesfully added to the leaderboard!';
@@ -79,7 +68,7 @@ const initiateLeaderboard = async () => {
 
     alertTimeout = setTimeout(() => {
       alertMsg.textContent = '';
-    }, 1000)
+    }, 1000);
   });
 
   refreshBtn.addEventListener('click', () => {
